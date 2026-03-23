@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 type TourPackage = {
   id: string;
@@ -45,10 +44,7 @@ const packagesSeed: TourPackage[] = [
 ];
 
 export default function BookingPage() {
-  const params = useSearchParams();
-  const packageIdFromUrl = params.get("packageId");
-
-  const [selectedPackageId, setSelectedPackageId] = useState<string>(packageIdFromUrl || packagesSeed[0].id);
+  const [selectedPackageId, setSelectedPackageId] = useState<string>(packagesSeed[0].id);
   const [travelDate, setTravelDate] = useState("");
   const [guests, setGuests] = useState(1);
   const [customerName, setCustomerName] = useState("");
@@ -62,6 +58,14 @@ export default function BookingPage() {
     [selectedPackageId]
   );
   const totalPrice = selectedPackage.price * guests;
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const packageIdFromUrl = params.get("packageId");
+    if (!packageIdFromUrl) return;
+    const exists = packagesSeed.some((p) => p.id === packageIdFromUrl);
+    if (exists) setSelectedPackageId(packageIdFromUrl);
+  }, []);
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
