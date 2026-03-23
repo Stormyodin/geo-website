@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+:root {
+  --background: 30 25% 98%;
+  --foreground: 210 40% 15%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 210 40% 15%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 210 40% 15%;
+
+  --primary: 205 75% 35%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 35 30% 90%;
+  --secondary-foreground: 210 40% 15%;
+
+  --muted: 35 20% 94%;
+  --muted-foreground: 210 15% 45%;
+
+  --accent: 15 85% 60%;
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 35 20% 88%;
+  --input: 35 20% 88%;
+  --ring: 205 75% 35%;
+  --radius: 0.75rem;
+
+  --ocean: 205 75% 35%;
+  --ocean-light: 205 60% 50%;
+  --sand: 35 30% 90%;
+  --coral: 15 85% 60%;
+  --cliff-red: 12 70% 45%;
+  --seafoam: 170 40% 85%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
