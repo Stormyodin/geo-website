@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 type TourPackage = {
   id: string;
@@ -73,19 +74,40 @@ export default function BookingPage() {
     setBookingComplete(true);
   };
 
+  const fadeInUp: any = {
+    initial: { opacity: 0, y: 20 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true },
+    transition: { duration: 0.6 }
+  };
+
   if (bookingComplete) {
     return (
       <main className="min-h-screen pt-32 pb-20">
         <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="max-w-2xl mx-auto text-center"
+          >
+            <motion.div 
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", damping: 12 }}
+              className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6"
+            >
               <span className="text-green-700 text-3xl">✓</span>
-            </div>
+            </motion.div>
             <h1 className="text-3xl md:text-4xl font-light text-foreground mb-4">Booking Confirmed!</h1>
             <p className="text-lg text-muted-foreground mb-8">
               Thanks for choosing <span className="font-medium text-foreground">{selectedPackage.title}</span>. We&apos;ve received your request.
             </p>
-            <div className="p-6 mb-8 text-left rounded-xl border border-border bg-card">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="p-6 mb-8 text-left rounded-xl border border-border bg-card shadow-lg"
+            >
               <h2 className="font-semibold text-foreground mb-4">Booking Details</h2>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
@@ -105,19 +127,19 @@ export default function BookingPage() {
                   <span className="font-bold text-[hsl(var(--ocean))]">${totalPrice} CAD</span>
                 </div>
               </div>
-            </div>
+            </motion.div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/" className="inline-flex items-center justify-center rounded-md border border-border px-6 py-3">
+              <Link href="/" className="inline-flex items-center justify-center rounded-md border border-border px-6 py-3 hover:bg-secondary transition-colors">
                 Return Home
               </Link>
               <Link
                 href="/packages"
-                className="inline-flex items-center justify-center rounded-md bg-[hsl(var(--ocean))] hover:bg-[hsl(var(--ocean-light))] text-white px-6 py-3"
+                className="inline-flex items-center justify-center rounded-md bg-[hsl(var(--ocean))] hover:bg-[hsl(var(--ocean-light))] text-white px-6 py-3 transition-colors shadow-lg shadow-ocean/20"
               >
                 Explore More Adventures
               </Link>
             </div>
-          </div>
+          </motion.div>
         </div>
       </main>
     );
@@ -126,25 +148,32 @@ export default function BookingPage() {
   return (
     <main className="min-h-screen pt-28 pb-20 bg-secondary/30">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <Link href="/packages" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[hsl(var(--ocean))] mb-4">
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <Link href="/packages" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-[hsl(var(--ocean))] mb-4 transition-colors">
             ← Back to Adventures
           </Link>
           <h1 className="text-3xl md:text-4xl font-light text-foreground mb-4">Book Your Adventure</h1>
           <p className="text-muted-foreground max-w-xl mx-auto">
             Complete your booking in a few steps. This route is wired and ready for backend integration.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
           <div className="lg:col-span-2">
             <form onSubmit={onSubmit} className="space-y-6">
-              <section className="p-6 rounded-xl border border-border bg-card">
+              <motion.section 
+                {...fadeInUp}
+                className="p-6 rounded-xl border border-border bg-card shadow-sm"
+              >
                 <h2 className="text-lg font-semibold mb-4">1. Select Your Adventure</h2>
                 <select
                   value={selectedPackageId}
                   onChange={(e) => setSelectedPackageId(e.target.value)}
-                  className="w-full h-12 rounded-md border border-border px-3 bg-background"
+                  className="w-full h-12 rounded-md border border-border px-3 bg-background focus:ring-2 focus:ring-ocean/20 transition-all outline-none"
                 >
                   {packagesSeed.map((pkg) => (
                     <option key={pkg.id} value={pkg.id}>
@@ -152,134 +181,164 @@ export default function BookingPage() {
                     </option>
                   ))}
                 </select>
-                <div className="mt-4 p-4 bg-secondary rounded-lg flex gap-4 items-start">
-                  <img src={selectedPackage.image_url} alt={selectedPackage.title} className="w-20 h-20 rounded-lg object-cover" />
+                <motion.div 
+                  layout
+                  className="mt-4 p-4 bg-secondary rounded-lg flex gap-4 items-start"
+                >
+                  <motion.img 
+                    layoutId="pkg-img"
+                    src={selectedPackage.image_url} 
+                    alt={selectedPackage.title} 
+                    className="w-20 h-20 rounded-lg object-cover shadow-sm" 
+                  />
                   <div>
-                    <h3 className="font-semibold">{selectedPackage.title}</h3>
+                    <motion.h3 layoutId="pkg-title" className="font-semibold">{selectedPackage.title}</motion.h3>
                     <p className="text-sm text-muted-foreground">{selectedPackage.description}</p>
-                    <p className="text-sm text-muted-foreground mt-1">
+                    <p className="text-sm text-muted-foreground mt-1 text-[hsl(var(--ocean))] font-medium">
                       {selectedPackage.duration}
                       {selectedPackage.max_guests ? ` · Max ${selectedPackage.max_guests}` : ""}
                     </p>
                   </div>
-                </div>
-              </section>
+                </motion.div>
+              </motion.section>
 
-              <section className="p-6 rounded-xl border border-border bg-card">
+              <motion.section 
+                {...fadeInUp}
+                transition={{ delay: 0.2 }}
+                className="p-6 rounded-xl border border-border bg-card shadow-sm"
+              >
                 <h2 className="text-lg font-semibold mb-4">2. Travel Details</h2>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm block mb-2">Travel Date *</label>
+                    <label className="text-sm block mb-2 font-medium">Travel Date *</label>
                     <input
                       type="date"
                       value={travelDate}
                       onChange={(e) => setTravelDate(e.target.value)}
-                      className="w-full h-12 rounded-md border border-border px-3 bg-background"
+                      className="w-full h-12 rounded-md border border-border px-3 bg-background focus:ring-2 focus:ring-ocean/20 transition-all outline-none"
                       required
                     />
                   </div>
                   <div>
-                    <label className="text-sm block mb-2">Guests *</label>
+                    <label className="text-sm block mb-2 font-medium">Guests *</label>
                     <input
                       type="number"
                       min={1}
                       max={10}
                       value={guests}
                       onChange={(e) => setGuests(Number(e.target.value))}
-                      className="w-full h-12 rounded-md border border-border px-3 bg-background"
+                      className="w-full h-12 rounded-md border border-border px-3 bg-background focus:ring-2 focus:ring-ocean/20 transition-all outline-none"
                       required
                     />
                   </div>
                 </div>
-              </section>
+              </motion.section>
 
-              <section className="p-6 rounded-xl border border-border bg-card">
+              <motion.section 
+                {...fadeInUp}
+                transition={{ delay: 0.3 }}
+                className="p-6 rounded-xl border border-border bg-card shadow-sm"
+              >
                 <h2 className="text-lg font-semibold mb-4">3. Your Information</h2>
                 <div className="space-y-4">
                   <div>
-                    <label className="text-sm block mb-2">Full Name *</label>
+                    <label className="text-sm block mb-2 font-medium">Full Name *</label>
                     <input
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
-                      className="w-full h-12 rounded-md border border-border px-3 bg-background"
+                      placeholder="Jane Doe"
+                      className="w-full h-12 rounded-md border border-border px-3 bg-background focus:ring-2 focus:ring-ocean/20 transition-all outline-none"
                       required
                     />
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-sm block mb-2">Email *</label>
+                      <label className="text-sm block mb-2 font-medium">Email *</label>
                       <input
                         type="email"
                         value={customerEmail}
+                        placeholder="jane@example.com"
                         onChange={(e) => setCustomerEmail(e.target.value)}
-                        className="w-full h-12 rounded-md border border-border px-3 bg-background"
+                        className="w-full h-12 rounded-md border border-border px-3 bg-background focus:ring-2 focus:ring-ocean/20 transition-all outline-none"
                         required
                       />
                     </div>
                     <div>
-                      <label className="text-sm block mb-2">Phone</label>
+                      <label className="text-sm block mb-2 font-medium">Phone</label>
                       <input
                         value={customerPhone}
+                        placeholder="+1 (902) 555-0123"
                         onChange={(e) => setCustomerPhone(e.target.value)}
-                        className="w-full h-12 rounded-md border border-border px-3 bg-background"
+                        className="w-full h-12 rounded-md border border-border px-3 bg-background focus:ring-2 focus:ring-ocean/20 transition-all outline-none"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm block mb-2">Special Requests</label>
+                    <label className="text-sm block mb-2 font-medium">Special Requests</label>
                     <textarea
                       value={specialRequests}
                       onChange={(e) => setSpecialRequests(e.target.value)}
-                      className="w-full min-h-[100px] rounded-md border border-border px-3 py-2 bg-background"
+                      placeholder="Dietary requirements, accessibility needs, etc."
+                      className="w-full min-h-[100px] rounded-md border border-border px-3 py-2 bg-background focus:ring-2 focus:ring-ocean/20 transition-all outline-none"
                     />
                   </div>
                 </div>
-              </section>
+              </motion.section>
 
-              <button
+              <motion.button
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.98 }}
                 type="submit"
-                className="w-full h-14 text-lg rounded-md bg-[hsl(var(--ocean))] hover:bg-[hsl(var(--ocean-light))] text-white"
+                className="w-full h-14 text-lg font-medium rounded-md bg-[hsl(var(--ocean))] hover:bg-[hsl(var(--ocean-light))] text-white transition-all shadow-lg shadow-ocean/20"
               >
                 Complete Booking - ${totalPrice} CAD
-              </button>
+              </motion.button>
             </form>
           </div>
 
           <aside className="lg:col-span-1">
-            <div className="p-6 rounded-xl border border-border bg-card sticky top-28">
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="p-6 rounded-xl border border-border bg-card sticky top-28 shadow-sm hover:shadow-md transition-shadow"
+            >
               <h3 className="font-semibold text-foreground mb-4">Booking Summary</h3>
               <div className="space-y-3 mb-6 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Package:</span>
-                  <span className="font-medium text-right">{selectedPackage.title}</span>
+                  <span className="font-medium text-right text-[hsl(var(--ocean))]">{selectedPackage.title}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Price / person:</span>
-                  <span>${selectedPackage.price} CAD</span>
+                  <span className="font-medium">${selectedPackage.price} CAD</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Guests:</span>
-                  <span>{guests}</span>
+                  <span className="font-medium">{guests}</span>
                 </div>
-                {travelDate ? (
-                  <div className="flex justify-between">
+                {travelDate && (
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex justify-between"
+                  >
                     <span className="text-muted-foreground">Date:</span>
-                    <span>{travelDate}</span>
-                  </div>
-                ) : null}
+                    <span className="font-medium">{travelDate}</span>
+                  </motion.div>
+                )}
               </div>
               <div className="border-t border-border pt-4 mb-6">
-                <div className="flex justify-between text-lg">
-                  <span className="font-semibold">Total:</span>
-                  <span className="font-bold text-[hsl(var(--ocean))]">${totalPrice} CAD</span>
+                <div className="flex justify-between text-lg items-center">
+                  <span className="font-semibold">Subtotal</span>
+                  <span className="font-bold text-2xl text-[hsl(var(--ocean))]">${totalPrice} CAD</span>
                 </div>
               </div>
               <div className="space-y-2 text-sm text-muted-foreground border-t border-border pt-4">
-                <p>• Secure booking flow</p>
-                <p>• Free cancellation up to 48h</p>
-                <p>• Instant confirmation screen</p>
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>• Secure booking flow</motion.p>
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>• Free cancellation up to 48h</motion.p>
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}>• Instant confirmation screen</motion.p>
               </div>
-            </div>
+            </motion.div>
           </aside>
         </div>
       </div>

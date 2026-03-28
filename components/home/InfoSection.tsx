@@ -1,49 +1,129 @@
-import Link from "next/link";
+"use client";
 
-const anneHighlights = [
-  "Visit Green Gables Heritage Place",
-  "Explore the Haunted Wood trail",
-  "Tour Montgomery's birthplace",
-  "Experience Anne-themed attractions"
-];
+import { motion } from "framer-motion";
+import { useAudio } from "@/components/AudioFeedback";
 
 export default function InfoSection() {
-  return (
-    <>
-      <section className="py-20 md:py-24">
-        <div className="container mx-auto px-4 max-w-5xl">
-          <span className="text-[hsl(var(--coral))] text-sm uppercase tracking-[0.2em] font-medium mb-4 block">Welcome to PEI</span>
-          <h2 className="text-3xl md:text-4xl font-light text-[hsl(var(--foreground))] mb-6">Canada&apos;s Birthplace Awaits</h2>
-          <div className="w-16 h-1 bg-[hsl(var(--ocean))] mb-8" />
-          <p className="text-lg text-[hsl(var(--muted-foreground))] leading-relaxed mb-8">
-            Prince Edward Island, affectionately known as &quot;The Gentle Island,&quot; is a place where time slows down and
-            every moment becomes a memory. With its signature red cliffs, endless sandy beaches, and warm Island
-            hospitality, PEI offers an escape from the ordinary.
-          </p>
-          <Link href="/discover-pei" className="inline-flex rounded-md bg-[hsl(var(--ocean))] text-white hover:bg-[hsl(var(--ocean-light))] px-8 py-3">
-            Learn More About PEI
-          </Link>
-        </div>
-      </section>
+  const { play } = useAudio();
 
-      <section className="py-20 bg-[hsl(var(--secondary))]/40">
-        <div className="container mx-auto px-4 max-w-5xl">
-          <span className="text-[hsl(var(--coral))] text-sm uppercase tracking-[0.2em] font-medium mb-4 block">Literary Heritage</span>
-          <h2 className="text-3xl md:text-4xl font-light text-[hsl(var(--foreground))] mb-6">Home of Anne of Green Gables</h2>
-          <p className="text-lg text-[hsl(var(--muted-foreground))] leading-relaxed mb-8">
-            Step into the world of Lucy Maud Montgomery&apos;s beloved character. The rolling farmland of Cavendish inspired
-            the setting for one of the world&apos;s most cherished novels.
-          </p>
-          <ul className="space-y-3">
-            {anneHighlights.map((item) => (
-              <li key={item} className="flex items-center gap-3 text-[hsl(var(--muted-foreground))]">
-                <span className="w-2 h-2 rounded-full bg-[hsl(var(--coral))] shrink-0" />
-                {item}
-              </li>
-            ))}
-          </ul>
+  return (
+    <section style={{ 
+      padding: "10rem 2rem", 
+      backgroundColor: "hsl(var(--background))",
+      overflow: "hidden"
+    }}>
+      <div style={{ maxWidth: "78rem", margin: "0 auto" }}>
+        <div style={{ 
+          display: "grid", 
+          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", 
+          gap: "6rem",
+          alignItems: "center"
+        }}>
+          {/* Text Content */}
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
+            viewport={{ once: true }}
+          >
+            <motion.span 
+              style={{ 
+                color: "hsl(var(--accent))", 
+                fontWeight: 700, 
+                fontSize: "0.85rem", 
+                textTransform: "uppercase", 
+                letterSpacing: "0.3em",
+                display: "block",
+                marginBottom: "1.5rem"
+              }}
+            >
+              Our Vision
+            </motion.span>
+            <h2 style={{ 
+              fontSize: "clamp(2.5rem, 5vw, 3.5rem)", 
+              marginBottom: "2rem",
+              fontWeight: 800,
+              lineHeight: 1.1,
+              letterSpacing: "-0.04em"
+            }}>
+              Crafting Unforgettable <br />
+              <span style={{ color: "hsl(var(--primary))" }}>Island Memories</span>
+            </h2>
+            <p style={{ 
+              fontSize: "1.15rem", 
+              color: "hsl(var(--muted-foreground))",
+              lineHeight: 1.8,
+              marginBottom: "2.5rem"
+            }}>
+              Since 2024, Coast & Cove has been dedicated to showcasing the authentic beauty of PEI. We believe in high-concept adventures that respect the island's natural rhythm while providing unparalleled service and luxury.
+            </p>
+            
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem" }}>
+              <div onMouseEnter={() => play("hover")}>
+                <h4 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "0.5rem" }}>Authenticity</h4>
+                <p style={{ fontSize: "0.9rem", color: "hsl(var(--muted-foreground))" }}>Real stories, real people, and real island life shared with every traveler.</p>
+              </div>
+              <div onMouseEnter={() => play("hover")}>
+                <h4 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "0.5rem" }}>Sustainability</h4>
+                <p style={{ fontSize: "0.9rem", color: "hsl(var(--muted-foreground))" }}>Protecting the red sandstone cliffs and pristine beaches for generations.</p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Imagery Grid */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
+            viewport={{ once: true }}
+            style={{ position: "relative" }}
+          >
+            <div style={{ 
+              aspectRatio: "1", 
+              borderRadius: "2rem", 
+              overflow: "hidden",
+              boxShadow: "0 40px 100px -20px rgba(0,0,0,0.15)",
+              border: "1px solid hsl(var(--border))"
+            }}>
+              <img 
+                src="/images/rolling_hills.jpg" 
+                alt="PEI Rolling Hills" 
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            </div>
+            
+            {/* Floating Detail Card */}
+            <motion.div 
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+              viewport={{ once: true }}
+              style={{
+                position: "absolute",
+                bottom: "-2rem",
+                left: "-2rem",
+                background: "rgba(var(--background), 0.8)",
+                backdropFilter: "blur(20px)",
+                padding: "2rem",
+                borderRadius: "1.5rem",
+                border: "1px solid rgba(255,255,255,0.1)",
+                boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
+                maxWidth: "18rem"
+              }}
+            >
+              <div style={{ display: "flex", gap: "1rem", alignItems: "center", marginBottom: "1rem" }}>
+                <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "hsl(var(--primary))", display: "flex", alignItems: "center", justifyContent: "center", color: "white" }}>
+                  📍
+                </div>
+                <h5 style={{ fontWeight: 700, margin: 0 }}>Local Expertise</h5>
+              </div>
+              <p style={{ fontSize: "0.85rem", color: "hsl(var(--muted-foreground))", margin: 0 }}>
+                Our guides are 100% island-born, ensuring you find the hidden paths and quiet coves.
+              </p>
+            </motion.div>
+          </motion.div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
