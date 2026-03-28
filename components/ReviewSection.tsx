@@ -22,19 +22,27 @@ export default function ReviewSection({ context = "general", title = "Visitor St
   const [media, setMedia] = useState<{ url: string; type: "image" | "video" }[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasMounted, setHasMounted] = useState(false);
   const { play } = useAudio();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
   // Load reviews from API on mount
   useEffect(() => {
+    if (!hasMounted) return;
+    
     let isCancelled = false;
     const fetchReviews = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(`/api/reviews?context=${context}`);
+        const url = `/api/reviews?context=${encodeURIComponent(context || "general")}`;
+        const response = await fetch(url);
         if (!isCancelled && response.ok) {
           const data = await response.json();
-          setReviews(data || []);
+          setReviews(Array.isArray(data) ? data : []);
         }
       } catch (e) {
         console.error("Failed to fetch reviews", e);
@@ -44,7 +52,7 @@ export default function ReviewSection({ context = "general", title = "Visitor St
     };
     fetchReviews();
     return () => { isCancelled = true; };
-  }, [context]);
+  }, [context, hasMounted]);
 
   // Saving is now handled via the POST request in handleSubmit
 
