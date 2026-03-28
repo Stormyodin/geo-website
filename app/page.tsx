@@ -3,6 +3,7 @@ import HeroSection from "@/components/home/HeroSection";
 import HighlightsSection from "@/components/home/HighlightsSection";
 import InfoSection from "@/components/home/InfoSection";
 import StatsSection from "@/components/home/StatsSection";
+import ReviewSection from "@/components/ReviewSection";
 
 export default function HomePage() {
   return (
@@ -11,6 +12,7 @@ export default function HomePage() {
       <HighlightsSection />
       <InfoSection />
       <StatsSection />
+      <ReviewSection context="home" title="Visitor Experiences" />
       <CtaSection />
     </main>
   );

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import ReviewSection from "@/components/ReviewSection";
 
 type TourPackage = {
   id: string;
@@ -240,6 +241,8 @@ export default function PackagesPage() {
           </motion.div>
         </div>
       </section>
+
+      <ReviewSection context="adventures" title="Visitor Trip Stories" />
     </main>
   );
 }

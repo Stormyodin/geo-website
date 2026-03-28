@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useAudio } from "@/components/AudioFeedback";
+import ReviewSection from "@/components/ReviewSection";
 
 /* ═══════════════════════════════════════════════════
    DATA: Landforms
@@ -260,7 +261,7 @@ export default function DiscoverPeiPage() {
   };
 
   return (
-    <main style={{ minHeight: "100vh", overflow: "hidden" }}>
+    <main style={{ minHeight: "100vh" }}>
 
       {/* Floating Background Orbs */}
       <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
@@ -317,6 +318,29 @@ export default function DiscoverPeiPage() {
           <motion.p variants={fadeUp} style={{ fontSize: "1.15rem", color: "rgba(255,255,255,0.9)", lineHeight: 1.8, maxWidth: "56rem", margin: "0 auto" }}>
             PEI is famous for its red soil and red cliffs. It produces more than 25% of Canada&apos;s potatoes. The island has beautiful hills, beaches, and forests. You can see many animals here, like red foxes and bald eagles. PEI also has a rich history from many different cultures, including Mi&apos;kmaq, Acadian, Scottish, and Irish.
           </motion.p>
+
+          <motion.div variants={fadeUp} style={{ marginTop: "2rem" }}>
+            <motion.a 
+              href="#reviews"
+              onMouseEnter={() => play("hover")}
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById("reviews")?.scrollIntoView({ behavior: "smooth" });
+                play("click");
+              }}
+              style={{ 
+                color: "rgba(255,255,255,0.6)", 
+                fontSize: "0.85rem", 
+                textDecoration: "none", 
+                borderBottom: "1px solid rgba(255,255,255,0.2)",
+                paddingBottom: "2px",
+                transition: "all 0.2s"
+              }}
+              whileHover={{ color: "white", borderColor: "white" }}
+            >
+              Read Visitor Reviews
+            </motion.a>
+          </motion.div>
 
           {/* Animated scroll down indicator */}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5, duration: 0.8 }} style={{ marginTop: "3rem" }}>
@@ -421,6 +445,9 @@ export default function DiscoverPeiPage() {
           </AnimatePresence>
         </div>
       </section>
+
+      {/* ══════ REVIEWS SECTION ══════ */}
+      <ReviewSection />
 
       {/* ══════ CTA SECTION ══════ */}
       <section style={{ padding: "5rem 1rem", background: "hsl(var(--ocean))", overflow: "hidden", position: "relative" }}>
