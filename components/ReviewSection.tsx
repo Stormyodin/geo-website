@@ -25,45 +25,37 @@ export default function ReviewSection({ context = "general", title = "Visitor St
   const { play } = useAudio();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Load reviews from localStorage on mount
+  // Load reviews from API on mount
   useEffect(() => {
-    const savedReviews = localStorage.getItem(storageKey);
-    if (savedReviews) {
+    const fetchReviews = async () => {
       try {
-        setReviews(JSON.parse(savedReviews));
-      } catch (e) {
-        console.error("Failed to parse reviews", e);
-      }
-    } else {
-      // Default reviews to make it look active
-      const defaultReviews: Review[] = [
-        {
-          id: "1",
-          name: "Sarah Jenkins",
-          rating: 5,
-          comment: "The red cliffs in Cavendish were absolutely breathtaking! I've never seen such vibrant colors in nature before. The guided tour was worth every penny.",
-          date: new Date().toLocaleDateString(),
-          media: [{ url: "/images/cavendish_cliffs.jpg", type: "image" }]
-        },
-        {
-          id: "2",
-          name: "Mark Thompson",
-          rating: 4,
-          comment: "Loved the food! The Malpeque oysters are legendary for a reason. Dockside experience was lovely, though it was a bit windy that day.",
-          date: new Date().toLocaleDateString(),
-          media: [{ url: "/images/oysters.jpg", type: "image" }]
+        const response = await fetch(`/api/reviews?context=${context}`);
+        if (response.ok) {
+          const data = await response.json();
+          // Provide some defaults if empty
+          if (data.length === 0 && context === "home") {
+            setReviews([
+              {
+                id: "1",
+                name: "Sarah Jenkins",
+                rating: 5,
+                comment: "The red cliffs in Cavendish were absolutely breathtaking! I've never seen such vibrant colors in nature before. The guided tour was worth every penny.",
+                date: new Date().toLocaleDateString(),
+                media: [{ url: "/images/cavendish_cliffs.jpg", type: "image" }]
+              }
+            ]);
+          } else {
+            setReviews(data);
+          }
         }
-      ];
-      setReviews(defaultReviews);
-    }
-  }, []);
+      } catch (e) {
+        console.error("Failed to fetch reviews", e);
+      }
+    };
+    fetchReviews();
+  }, [context]);
 
-  // Save reviews to localStorage whenever they change
-  useEffect(() => {
-    if (reviews.length > 0) {
-      localStorage.setItem(storageKey, JSON.stringify(reviews));
-    }
-  }, [reviews, storageKey]);
+  // Saving is now handled via the POST request in handleSubmit
 
   const handleMediaUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -93,26 +85,37 @@ export default function ReviewSection({ context = "general", title = "Visitor St
     setIsSubmitting(true);
     play("click");
 
-    // Simulate network delay
-    setTimeout(() => {
-      const newReview: Review = {
-        id: Date.now().toString(),
-        name,
-        rating,
-        comment,
-        date: new Date().toLocaleDateString(),
-        media
-      };
+    // Save to server
+    const newReview: Review = {
+      id: Date.now().toString(),
+      name,
+      rating,
+      comment,
+      date: new Date().toLocaleDateString(),
+      media
+    };
 
-      setReviews((prev) => [newReview, ...prev]);
-      setName("");
-      setRating(5);
-      setComment("");
-      setMedia([]);
-      setIsSubmitting(false);
-      setIsFormOpen(false);
-      play("success");
-    }, 800);
+    fetch("/api/reviews", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ context, review: newReview })
+    })
+      .then((res) => res.json())
+      .then((saved) => {
+        setReviews((prev) => [saved, ...prev]);
+        setName("");
+        setRating(5);
+        setComment("");
+        setMedia([]);
+        setIsSubmitting(false);
+        setIsFormOpen(false);
+        play("success");
+      })
+      .catch((err) => {
+        console.error("Failed to save review", err);
+        setIsSubmitting(false);
+        play("error");
+      });
   };
 
   return (
