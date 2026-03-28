@@ -15,44 +15,35 @@ interface Review {
 
 export default function ReviewSection({ context = "general", title = "Visitor Stories" }: { context?: string; title?: string }) {
   const [reviews, setReviews] = useState<Review[]>([]);
-  const storageKey = `pei-reviews-${context}-v1`;
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [name, setName] = useState("");
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [media, setMedia] = useState<{ url: string; type: "image" | "video" }[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { play } = useAudio();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load reviews from API on mount
   useEffect(() => {
+    let isCancelled = false;
     const fetchReviews = async () => {
       try {
+        setIsLoading(true);
         const response = await fetch(`/api/reviews?context=${context}`);
-        if (response.ok) {
+        if (!isCancelled && response.ok) {
           const data = await response.json();
-          // Provide some defaults if empty
-          if (data.length === 0 && context === "home") {
-            setReviews([
-              {
-                id: "1",
-                name: "Sarah Jenkins",
-                rating: 5,
-                comment: "The red cliffs in Cavendish were absolutely breathtaking! I've never seen such vibrant colors in nature before. The guided tour was worth every penny.",
-                date: new Date().toLocaleDateString(),
-                media: [{ url: "/images/cavendish_cliffs.jpg", type: "image" }]
-              }
-            ]);
-          } else {
-            setReviews(data);
-          }
+          setReviews(data || []);
         }
       } catch (e) {
         console.error("Failed to fetch reviews", e);
+      } finally {
+        if (!isCancelled) setIsLoading(false);
       }
     };
     fetchReviews();
+    return () => { isCancelled = true; };
   }, [context]);
 
   // Saving is now handled via the POST request in handleSubmit
@@ -329,7 +320,16 @@ export default function ReviewSection({ context = "general", title = "Visitor St
         {/* Reviews List */}
         <div style={{ display: "grid", gap: "2rem" }}>
           <AnimatePresence initial={false}>
-            {reviews.map((review, idx) => (
+            {isLoading ? (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ padding: "4rem", textAlign: "center", color: "hsl(var(--muted-foreground))" }}>
+                Loading visitor stories...
+              </motion.div>
+            ) : reviews.length === 0 ? (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ padding: "4rem", textAlign: "center", border: "2px dashed hsl(var(--border))", borderRadius: "1rem", color: "hsl(var(--muted-foreground))" }}>
+                No reviews yet. Be the first to share your experience!
+              </motion.div>
+            ) : (
+              reviews.map((review, idx) => (
               <motion.div
                 key={review.id}
                 initial={{ opacity: 0, y: 30 }}
@@ -387,7 +387,7 @@ export default function ReviewSection({ context = "general", title = "Visitor St
                   </div>
                 )}
               </motion.div>
-            ))}
+            )))}
           </AnimatePresence>
         </div>
       </div>
