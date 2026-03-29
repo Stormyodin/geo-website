@@ -5,6 +5,7 @@ import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useAudio } from "@/components/AudioFeedback";
 import ReviewSection from "@/components/ReviewSection";
+import EarthViewer from "@/components/EarthViewer";
 
 /* ═══════════════════════════════════════════════════
    DATA: Landforms
@@ -380,18 +381,9 @@ export default function DiscoverPeiPage() {
         </motion.div>
       </motion.section>
 
-      {/* ══════ ECOSYSTEM DESCRIPTION ══════ */}
-      <motion.section variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }}
-        style={{ padding: "5rem 1rem 0", textAlign: "center", maxWidth: "52rem", margin: "0 auto" }}>
 
-        <motion.h2 variants={fadeUp} style={{ fontSize: "2rem", color: "hsl(var(--foreground))", fontWeight: 300, marginBottom: "1rem" }}>
-          A Living Ecosystem
-        </motion.h2>
-        <motion.div variants={expandWidth} style={{ height: "3px", background: "hsl(var(--ocean))", margin: "0 auto 1.5rem" }} />
-        <motion.p variants={fadeUp} style={{ color: "hsl(var(--muted-foreground))", lineHeight: 1.8 }}>
-          PEI is home to many different trees and plants. The sand dunes and marshes help protect the land. The island has a balance of nature, culture, and a strong economy. It is a wonderful place for people to live and visit.
-        </motion.p>
-      </motion.section>
+      {/* ══════ 3D EARTH SECTION (NEW) ══════ */}
+      <EarthViewer />
 
       {/* ══════ TABS SECTION ══════ */}
       <section style={{ padding: "4rem 1rem 5rem", position: "relative", zIndex: 10 }}>
