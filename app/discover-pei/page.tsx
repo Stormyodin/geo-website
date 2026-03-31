@@ -366,9 +366,7 @@ export default function DiscoverPeiPage() {
             { value: "Over 25%", label: "Of Canada's Potatoes" },
             { value: "1,100 km", label: "Pristine Coastline" },
             { value: "250+", label: "Watersheds" },
-            { value: "92,500+", label: "Active Jobs" },
-            { value: "High", label: "GDP and Export Growth" },
-            { value: "Low", label: "Inflation Rate" }
+            { value: "High", label: "GDP and Export Growth" }
           ].map((stat) => (
             <motion.div key={stat.label} variants={scaleIn}>
               <motion.p style={{ fontSize: "1.75rem", fontWeight: 400, color: "hsl(var(--ocean))", margin: 0 }}
